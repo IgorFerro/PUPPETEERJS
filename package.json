@@ -1,0 +1,24 @@
+{
+  "name": "puppeteerjs",
+  "version": "1.0.0",
+  "description": "Automated testing with puppeteer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IgorFerro/PUPPETEERJS.git"
+  },
+  "author": "Igor Ferro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IgorFerro/PUPPETEERJS/issues"
+  },
+  "homepage": "https://github.com/IgorFerro/PUPPETEERJS#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.0.0",
+    "puppeteer": "^2.0.0"
+  }
+}
