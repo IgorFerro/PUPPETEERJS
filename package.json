@@ -4,7 +4,7 @@
   "description": "Automated testing with puppeteer",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/mocha/bin/mocha --timeout=30000 ./tests"
   },
   "repository": {
     "type": "git",
@@ -20,5 +20,8 @@
     "chai": "^4.2.0",
     "mocha": "^7.0.0",
     "puppeteer": "^2.0.0"
+  },
+  "devDependencies": {
+    "prettier": "1.19.1"
   }
 }
