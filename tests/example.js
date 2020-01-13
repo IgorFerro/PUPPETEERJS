@@ -8,6 +8,13 @@ const waitForText = require('../lib/helpers').waitForText
 const pressKey = require('../lib/helpers').pressKey
 const shouldExist = require('../lib/helpers').shouldExist
 
+/*const generateEmail = require('../lib/utils').generateEmail
+const generateID = require('../lib/utils').generateID
+const generateNumbers = require('../lib/utils').generateNumbers
+*/
+const utils = require('../lib/utils')
+
+
 describe('My first puppeteer test', () => {
 	let browser
 	let page
@@ -48,7 +55,7 @@ describe('My first puppeteer test', () => {
 		const url = await page.url()
 		const title = await page.title()
 
-		await page.waitFor(3000) //Bad Pratice!
+		//await page.waitFor(3000) //Bad Pratice!
 
 		expect(url).to.contain('dev')
 		expect(title).to.contains('Community')
@@ -60,7 +67,9 @@ describe('My first puppeteer test', () => {
 	})
 	it('submit searchbox', async () => {
 		await loadUrl(page, config.baseUrl)
-		await typeText(page, 'Javascript', '#nav-search')
+        //await typeText(page, 'Javascript', '#nav-search')
+        await typeText(page, utils.generateNumbers(), '#nav-search')
+        await page.waitFor(3000)
 		await pressKey(page, 'Enter')
 		await shouldExist(page, '#articles-list')
 	})
