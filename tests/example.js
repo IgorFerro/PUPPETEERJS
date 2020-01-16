@@ -7,13 +7,13 @@ const loadUrl = require('../lib/helpers').loadUrl
 const waitForText = require('../lib/helpers').waitForText
 const pressKey = require('../lib/helpers').pressKey
 const shouldExist = require('../lib/helpers').shouldExist
+const getCount = require('../lib/helpers').getCount
 
 /*const generateEmail = require('../lib/utils').generateEmail
 const generateID = require('../lib/utils').generateID
 const generateNumbers = require('../lib/utils').generateNumbers
 */
 const utils = require('../lib/utils')
-
 
 describe('My first puppeteer test', () => {
 	let browser
@@ -36,41 +36,96 @@ describe('My first puppeteer test', () => {
 	after(async function() {
 		await browser.close()
 	})
-	it('My first test step', async () => {
-		await loadUrl(page, config.baseUrl)
-		await shouldExist(page, '#nav-search')
 
-		const url = await page.url()
-		const title = await page.title()
+	const LOGIN_FORM = '#login_form'
 
-		expect(url).to.contain('dev')
-		expect(title).to.contains('Community')
+	describe('Login Test', () => {
+		it('should navigate to homepage', async () => {
+			await loadUrl(page, config.baseUrl)
+			await shouldExist(page, '#online_banking_features')
+		})
+		it('should click on signin button', async () => {
+			await click(page, '#signin_button')
+			await shouldExist(page, LOGIN_FORM)
+		})
+		it('should submit login form', async () => {
+			await typeText(page, utils.generateID(), '#user_login')
+			await typeText(page, utils.generateNumbers(), '#user_password')
+			await click(page, '.btn-primary')
+		})
+
+		it('should get error message', async () => {
+			await waitForText(page, 'body', 'Login and/or password are wrong')
+			await shouldExist(page, LOGIN_FORM)
+		})
 	})
 
-	it('browser reload', async () => {
-		await page.reload()
-		await shouldExist(page, '#page-content')
-		await waitForText(page, 'body', 'WRITE A POST')
-
-		const url = await page.url()
-		const title = await page.title()
-
-		//await page.waitFor(3000) //Bad Pratice!
-
-		expect(url).to.contain('dev')
-		expect(title).to.contains('Community')
+	describe('search test', async () => {
+		it('should navigate to homepage', async () => {
+			await loadUrl(page, config.baseUrl)
+			await shouldExist(page, '#online_banking_features')
+		})
+		it('should submit search phrase', async () => {
+			await typeText(page, 'hello world', '#searchTerm')
+			await pressKey(page, 'Enter')
+		})
+		it('should display search results', async () => {
+			await waitForText(page, 'h2', 'Search Results')
+			await waitForText(page, 'body', 'No results were found for the query')
+		})
 	})
-	it('click method', async () => {
-		await loadUrl(page, config.baseUrl)
-		await click(page, '#write-link')
-		await shouldExist(page, '.registration-rainbow')
+
+	describe('Navbar Links Test', async () => {
+		it('should navigate to homepage', async () => {
+			await loadUrl(page, config.baseUrl)
+			await shouldExist(page, '#online_banking_features')
+		})
+		it('should have correct number of links', async () => {
+			// get count of links
+			const numberOfLinks = await getCount(page, '#pages-nav > li')
+			// assert the count
+			expect(numberOfLinks).to.equal(3)
+		})
 	})
-	it('submit searchbox', async () => {
-		await loadUrl(page, config.baseUrl)
-        //await typeText(page, 'Javascript', '#nav-search')
-        await typeText(page, utils.generateNumbers(), '#nav-search')
-        await page.waitFor(3000)
-		await pressKey(page, 'Enter')
-		await shouldExist(page, '#articles-list')
+
+	describe('Feedback Test', async () => {
+		it('should navigate to homepage', async () => {
+			await loadUrl(page, config.baseUrl)
+			await shouldExist(page, '#online_banking_features')
+		})
+		it('should click on feedback link', async () => {
+			await click(page, '#feedback')
+			await shouldExist(page, 'form')
+		})
+		it('should submit feedback form', async () => {
+			await typeText(page, 'Igor', '#name')
+			await typeText(page, utils.generateEmail(), '#email')
+			await typeText(page, 'Just Subject', '#subject')
+			await typeText(page, 'Just a comment', '#comment')
+			await click(page, 'input[type="submit"]')
+		})
+		it('should display sucess message', async () => {
+			await shouldExist(page, '#feedback-title')
+			await waitForText(page, 'body', 'Thank you for your comments')
+		})
+	})
+	describe('Forgotten Password', async () => {
+		it('should navigate to homepage', async () => {
+			await loadUrl(page, config.baseUrl)
+			await shouldExist(page, '#online_banking_features')
+		})
+		it('should load forgotten password form', async () => {
+			await loadUrl(page, 'http://zero.webappsecurity.com/forgot-password.html')
+			await waitForText(page, 'h3', 'Forgotten Password')
+	   })
+	   it('should submit email', async () => {
+		await typeText(page,utils.generateEmail(), '#user_email')
+		await click(page, '.btn-primary')
+	 })
+	 it('should display succes message', async () => {
+		await waitForText(page, 'body','Your password will be sent to the following email')
+	
+	 })
+	 
 	})
 })
